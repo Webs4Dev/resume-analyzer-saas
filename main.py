@@ -2,9 +2,18 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from analyse_resume import analyze_resume
 from pdf_loader import read_pdf, get_text
-from fastapi import UploadFile, File
+from fastapi import UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Resume vs JD Analyzer (Langflow)")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class AnalyzeRequest(BaseModel):
     resume_text: str
@@ -13,7 +22,7 @@ class AnalyzeRequest(BaseModel):
 @app.post("/analyze-pdf")
 async def analyze_pdf(
     resume: UploadFile = File(...),
-    job_description: str = ""
+    job_description: str = Form(...),
 ):
 
     with open(resume.filename, "wb") as f:

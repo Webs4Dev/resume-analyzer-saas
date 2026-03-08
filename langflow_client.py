@@ -7,6 +7,33 @@ load_dotenv()
 OPEN_AI_API = os.getenv("OPEN_AI_API")
 LANGFLOW_API_KEY = os.getenv("LANGFLOW_API_KEY")
 LANGFLOW_FLOW_URL = os.getenv("LANGFLOW_FLOW_URL")
+SKILL_FLOW_URL = os.getenv("SKILL_FLOW_URL")
+
+def call_skill_flow(prompt: str):
+
+    payload = {
+        "input_type": "text",
+        "output_type": "text",
+        "input_value": prompt
+    }
+
+    headers = {
+        "x-api-key": LANGFLOW_API_KEY,
+    }
+
+    response = requests.post(
+        SKILL_FLOW_URL,
+        headers=headers,
+        json=payload
+    )
+
+    data = response.json()
+
+    return (
+        data["outputs"][0]
+        ["outputs"][0]
+        ["results"]["text"]["data"]["text"]
+    )
 
 def call_langflow(prompt: str) -> str:
 
@@ -37,7 +64,7 @@ def call_langflow(prompt: str) -> str:
         return (
             data["outputs"][0]
                 ["outputs"][0]
-                ["results"]["message"]["data"]["text"]
+                ["results"]["text"]["data"]["text"]
         )
 
     except Exception as e:
