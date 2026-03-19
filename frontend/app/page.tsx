@@ -18,7 +18,7 @@ export default function Home() {
       const formData = new FormData()
       formData.append("resume", file)
       formData.append("job_description", jd)
-      const res = await axios.post("http://127.0.0.1:8000/analyze-pdf", formData)
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/analyze-pdf`, formData)
       setResult(res.data)
     } catch {
       alert("Error analyzing resume. Make sure the API is running.")
